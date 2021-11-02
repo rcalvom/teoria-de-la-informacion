@@ -15,9 +15,9 @@ tiempo=0:0.001:T_0; % Vector de tiempo
 Y_x=x(tiempo);      % función evaluada
 
 %Grafica de la función x(t)
+figure('position',[80,80,1200,600]);
 tiledlayout(ceil(sqrt(size(N,1))),floor(sqrt(size(N,1)))+1) %tamaño de la cuadricula de graficas
 nexttile
-
 %Grafica de x(t)
 grafica=plot(tiempo,Y_x, '-', 'LineWidth',2); title(strcat('función X(t) = ',char(x))); xlabel('t'); ylabel(char(x)); hold on; axis([0 T_0 -1.5 1.5 ]);
 
