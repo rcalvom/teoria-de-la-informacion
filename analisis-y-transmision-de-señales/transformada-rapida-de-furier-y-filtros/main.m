@@ -1,12 +1,19 @@
-ts = 0.01;
-t = [-pi: ts : pi];
-a = 1;
+% Valores iniciales
+disp('Ingrese a');
+a = input('a =');
+F = 100;
+Fs = 1/F;
+t = [-pi : Fs : pi]; % Vector de tiempo
 
+% Pulso rectangular en el dominio especifico
 x = rectpuls(t, 2*a);
+subplot(2,1,1);
+plot (t, x, 'r'); grid; axis([-2.5 2.5 -0.1 1.1])
+title(strcat('Pulso rectangular entre -', num2str(a), ' y ', num2str(a)));
+xlabel('Tiempo(t)');
+ylabel('x(t)')
 
 X = fft(x) * ts;
-
-
 X_w = fftshift(X);
 
 % Ventana del Filtro pasa-bajas ideal.
@@ -109,4 +116,3 @@ figure('Name', 'Filtro suprime-bandas ideal');
     subplot(2, 2, 4);
         x_p = abs(ifft(ifftshift(Y_w))/ts);
         plot(t, x_p, 'b'); xlabel('t'); ylabel('y(t)'); title('Gráfica del pulso tras el filtrado'); grid; axis([-pi pi -1/4 5/4]);
-
