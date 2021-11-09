@@ -1,14 +1,14 @@
 % Valores iniciales
 disp('Ingrese a');
-a = input('a =');
+a = input('a = ');
 F = 100;
-Fs=1/F;
-t=[-pi:Fs:pi]; % Vector de tiempo
+Fs = 1/F;
+t = [-pi : Fs : pi]; % Vector de tiempo
 f = t/Fs; % Vector de frecuencia
-fr=@(t) (t>-a)&(t<a);
+fr = @(t) (t>-a)&(t<a);
 
 % Pulso rectangular en el dominio especifico
-x=fr(t);
+x = fr(t);
 subplot(2,1,1);
 plot (t, x, 'r'); grid; axis([-2.5 2.5 -0.1 1.1])
 title(strcat('Pulso rectangular entre -', num2str(a),' y ',num2str(a)));
@@ -16,17 +16,17 @@ xlabel('Tiempo(t)');
 ylabel('x(t)')
 
 % Pulso rectangular con FFT
-ff=fft(x)*Fs;
+ff = fft(x)*Fs;
 X = fftshift(abs(ff));
 subplot(2,1,2);
-stem(f,X,'.r'); %la graficamos en barras para poder comparar
-xlabel('Frecuencia (f)');
-ylabel('X(w)'); grid;  title('Comparacion función FFT() y analiticamente');
+stem(f, X, '.r'); %la graficamos en barras para poder comparar
+xlabel('\omega');
+ylabel('X(\omega)'); grid;  title('Comparacion función FFT() y analiticamente');
 hold on
 % Tambien la graficamos analiticamente para compararla
 sa=@(x) ((sin(x)+(x==0))./(x+(x==0))); %Genera la función sa(x) = sin (x)/x
 omega=[-20:0.1:20];
-plot(omega,abs(2*a*sa(a*omega)),'-b'); hold off; axis([-20 20 -0.1 2.5]);legend('FFT Matlab','FFT analitica');
+plot(omega, abs(2*a*sa(a*omega)), '-b'); hold off; axis([-20 20 -0.1 2.5]); legend('FFT Matlab', 'FFT analitica');
 
 X = fft(x) * Fs;
 X_w = fftshift(X);
