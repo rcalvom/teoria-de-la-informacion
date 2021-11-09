@@ -28,7 +28,7 @@ sa=@(x) ((sin(x)+(x==0))./(x+(x==0))); %Genera la función sa(x) = sin (x)/x
 omega=[-20:0.1:20];
 plot(omega,abs(2*a*sa(a*omega)),'-b'); hold off; axis([-20 20 -0.1 2.5]);legend('FFT Matlab','FFT analitica');
 
-X = fft(x) * Fs;
+X = fft(x) * ts;
 X_w = fftshift(X);
 
 % Ventana del Filtro pasa-bajas ideal.
@@ -52,7 +52,7 @@ figure('Name', 'Filtro pasa-bajas ideal');
 
     % Subgráfica de la transformada y(t) tras el filtro.
     subplot(2, 2, 4);
-        y = abs(ifft(ifftshift(Y_w))/Fs);
+        y = abs(ifft(ifftshift(Y_w))/ts);
         plot(t, y, 'b'); xlabel('t'); ylabel('y(t)'); title('Gráfica del pulso tras el filtrado'); grid; axis([-pi pi -1/4 5/4]);
 
 
@@ -77,7 +77,7 @@ figure('Name', 'Filtro pasa-altas ideal');
 
     % Subgráfica de la transformada y(t) tras el filtro.
     subplot(2, 2, 4);
-        x_p = abs(ifft(ifftshift(Y_w))/Fs);
+        x_p = abs(ifft(ifftshift(Y_w))/ts);
         plot(t, x_p, 'b'); xlabel('t'); ylabel('y(t)'); title('Gráfica del pulso tras el filtrado'); grid; axis([-pi pi -1/4 5/4]);
 
 
@@ -103,7 +103,7 @@ figure('Name', 'Filtro pasa-bandas ideal');
 
     % Subgráfica de la transformada y(t) tras el filtro.
     subplot(2, 2, 4);
-        x_p = abs(ifft(ifftshift(Y_w))/Fs);
+        x_p = abs(ifft(ifftshift(Y_w))/ts);
         plot(t, x_p, 'b'); xlabel('t'); ylabel('y(t)'); title('Gráfica del pulso tras el filtrado'); grid; axis([-pi pi -1/4 5/4]);
 
 
@@ -129,5 +129,5 @@ figure('Name', 'Filtro suprime-bandas ideal');
 
     % Subgráfica de la transformada y(t) tras el filtro.
     subplot(2, 2, 4);
-        x_p = abs(ifft(ifftshift(Y_w))/Fs);
+        x_p = abs(ifft(ifftshift(Y_w))/ts);
         plot(t, x_p, 'b'); xlabel('t'); ylabel('y(t)'); title('Gráfica del pulso tras el filtrado'); grid; axis([-pi pi -1/4 5/4]);
