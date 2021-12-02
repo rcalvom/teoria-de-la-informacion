@@ -1,5 +1,8 @@
 % Definicion de variables simbolicas.
-syms t n k;
+syms t 
+syms n 
+syms k
+syms x(t)
 
 % Se recibe la función x(t) por parte del usuario.
 x(t) = input(newline + "Ingresa una función periodica x(t): ");

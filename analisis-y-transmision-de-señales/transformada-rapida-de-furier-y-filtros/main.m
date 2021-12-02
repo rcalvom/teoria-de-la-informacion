@@ -43,7 +43,7 @@ figure('Name', 'Filtro pasa-bajas ideal');
 
     % Subgráfica de la transformada X(w).
     subplot(2, 2, 2);
-        plot(t, X_w, 'b'); xlabel('\omega'); ylabel('X(\omega)'); title('Gráfica de la señal'); grid; axis([-pi pi -1/4 5/4]);
+        plot(t, X_w, 'b'); xlabel('\omega'); ylabel('X(\omega)'); title('Gráfica de la transformada'); grid; axis([-pi pi -1/4 5/4]);
 
     % Subgráfica de la transformada filtrada Y(w).
     subplot(2, 2, 3);
@@ -116,7 +116,7 @@ figure('Name', 'Filtro suprime-bandas ideal');
         w1 = 0.25;
         w2 = 0.75;
         BFS = (t < -w2) | ((t > -w1) & (t < w1)) | (t > w2);
-        plot(t, BPF, 'b'); xlabel('t'); ylabel('h(t)'); title('Gráfica del filtro suprime-bandas ideal'); grid; axis([-pi pi -1/4 5/4]);
+        plot(t, BFS, 'b'); xlabel('t'); ylabel('h(t)'); title('Gráfica del filtro suprime-bandas ideal'); grid; axis([-pi pi -1/4 5/4]);
 
     % Subgráfica de la transformada X(w).
     subplot(2, 2, 2);
