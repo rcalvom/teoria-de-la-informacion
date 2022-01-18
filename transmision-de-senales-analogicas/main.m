@@ -12,12 +12,13 @@ T_s = input("Ingrese el valor del periodo de muestreo T_s: ");
 % Se crea el vector t.
 t = 0 : 0.01 : f_m;
 
-% Se encuentra el valor máximo de m para usarlo en los limites de la gráfica.
+% Se encuentra el valor máximo y minimo de m para usarlo en los limites de la gráfica.
 max_mt = double(max(m(t)));
+min_mt = double(min(m(t)));
 
 % Se grafica m(t)
 subplot(4, 1, 1);
-plot(t, m(t), "-"); xlabel("t"); ylabel("m(t)"); title("Gráfica de la señal m(t)");  axis([0 f_m -(max_mt + 0.5) (max_mt + 0.5)]);
+plot(t, m(t), "-"); xlabel("t"); ylabel("m(t)"); title("Gráfica de la señal m(t)");  axis([0 f_m (min_mt - 0.5) (max_mt + 0.5)]);
 
 % Se calcula el vector t_n.
 t_n = 0 : T_s : f_m;
@@ -25,7 +26,7 @@ t_n = 0 : T_s : f_m;
 % Se grafican las muestras de la señal m(t)
 subplot(4, 1, 2);
 stem(t_n, m(t_n));
-xlabel("t_n"); ylabel("m(t_n)"); title("Gráfica de las muestras de la señal m(t)"); axis([0 f_m -(max_mt + 0.5) (max_mt + 0.5)]);
+xlabel("t_n"); ylabel("m(t_n)"); title("Gráfica de las muestras de la señal m(t)"); axis([0 f_m (min_mt - 0.5) (max_mt + 0.5)]);
 
 
 %%% B. Cuantización %%%
@@ -35,12 +36,12 @@ xlabel("t_n"); ylabel("m(t_n)"); title("Gráfica de las muestras de la señal m(
 n = input("Ingrese el numero de bits (n) a codificar: ");
 
 % Se cuantiza la señal usando el script dado en clase.
-xq = cuantUniforme(m(t_n), 1, n);
+xq = cuantUniforme(m(t_n), max([abs(min_mt) abs(max_mt)]), n);
 
 subplot(4, 1, 3);
 plot(t_n, xq, 'k');
 xlabel('nT_s'); ylabel('x_q(nT_s)'); title("Gráfica de la señal m(t) cuantizada");
-axis([0 f_m -(max_mt + 0.5) (max_mt + 0.5)]); xlabel('nT_s'); ylabel('x_q(nT_s)');
+axis([0 f_m (min_mt - 0.5) (max_mt + 0.5)]); xlabel('nT_s'); ylabel('x_q(nT_s)');
 
 
 %%% C. CODIFICACIÓN %%%
@@ -65,7 +66,6 @@ disp(train)
 
 %%% D. Gráfica de la codificación %%%
 
-arr
 while 1
     disp("Seleccione el tipo de codificación :");
     disp("0-Continuar");
@@ -86,7 +86,7 @@ while 1
     %Return Zero
     RZ= [ones(1,f_s/2) zeros(1,f_s/2)];
     %Caso especial para Manchester
-    Man=[ones(1,f_s/2)  -ones(1,f_s/2)] ;
+    Man=[ones(1,f_s/2)  -ones(1,f_s/2)];
     
     switch (opcion)
         case 0
@@ -196,8 +196,8 @@ while 1
     t1=(0:(length(y)-1))/f_s;
     figure;
     plot(t1,y,'LineWidth',3);
-    axis([0 160 -3 3]); title('Señal codificada');xlabel('nT_s'); ylabel('x(nT_s)');title(titulo);
-    xlim([0 50])
+    axis([0 size(arr, 2) -2 2]); title('Señal codificada');xlabel('nT_s'); ylabel('x(nT_s)');title(titulo);
+    %xlim([0 50]);
     grid on;
 end
 
