@@ -15,7 +15,7 @@ function d = decode(P, r);
     error = false;
     % Se itera por cada fila de la matriz Ht
     for i = 1 : size(Ht, 1);
-        % Si el vector s es igual a alguna fiña de la matriz Ht
+        % Si el vector s es igual a alguna fila de la matriz Ht
         if isequal(s, Ht(i, :));
             disp("Se ha encontrado una incosistencia en el bit " + i + " de la palabra dada. Se ha corregido dicha inconsistencia.");
             error = true;
