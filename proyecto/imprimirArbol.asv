@@ -11,13 +11,13 @@ elseif (strcmp(arbol.valor, 'false'))
 else
     % Nodo actual Un divisor de atributos
     fprintf('padre: %s\tatributo: %s\tfalseChild:%s\ttrueChild:%s\n', ...
-        padre, string(arbol.valor(1)), string(arbol.izquierdo.valor(1)),string(arbol.derecho.valor(1)));
+        padre, arbol.valor(1,1), arbol.izquierdo.valor(1,1), arbol.derecho.valor(1));
 end
 
 % Recuperar el subárbol izquierdo
-imprimirArbol(arbol.izquierdo, string(arbol.valor));
+imprimirArbol(arbol.izquierdo, arbol.valor);
 
 % Recurre el subárbol derecho
-imprimirArbol(arbol.derecho, string(arbol.valor));
+imprimirArbol(arbol.derecho, arbol.valor);
 
 end

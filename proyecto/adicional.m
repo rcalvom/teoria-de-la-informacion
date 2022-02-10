@@ -9,7 +9,7 @@ if name ~= 0
     atributos = table.Properties.VariableNames;
     arbol = ID3(arreglo,atributos,activos)
     disp("inicio")
-    %imprimirArbol(arbol, 'root');
+    imprimirArbol(arbol, 'root');
 end
             
    
