@@ -1,0 +1,198 @@
+function [arbol] = ID3(ejemplos, atributos, atributosActivos)
+
+% args:
+%       ejemplos            - matriz de 1s y 0s para verdaderos y falsos,
+%                             siendo el últmo de cada fila el valor del
+%                             atributo clasificador
+%       atributos           - arreglo de cadenas de atributos (no CLASS)
+%
+%       atributosActivos    - vector de 1s y 0s, 1 corresponde al 
+%                             atributo activo(no CLASS)
+
+% return:
+%       arbol                - el nodo raíz de un árbol de decisión 
+% estructura de arbol:
+%       valor                - será la cadena para el atributo de división,
+%                               'true' o 'false' para la hoja.
+%       izquierdo            - puntero izquierdo a otro nodo del árbol 
+%                              (izquierdo significa que el atributo de división era falso) 
+%       derecho               - puntero derecho a otro nodo del árbol 
+%                              (derecho significa que el atributo de división era verdadero)
+
+if (isempty(ejemplos))
+    error ('Debe proveer ejemplos');
+end
+
+%constantes
+numeroAtributos = length(atributosActivos)
+numeroEjemplos = lenght(ejemplos(:,1));
+
+% Creamos el nodo arbol
+arbol = struct('valor', 'null', 'izquierdo', 'null', 'derecho', 'null');
+
+% Si el último valor de todas las filas en los ejemplos es 1, devuelva el árbol etiquetado 'verdadero'
+
+sumUltimaCol = sum(ejemplos(:, numeroAtributos + 1));
+
+if (sumUltimaCol == numeroEjemplos)
+    arbol.value = 'true';
+    return
+end
+
+% Si el último valor de todas las filas en los ejemplos es 0, devuelva el árbol etiquetado 'Falso'
+if (sumUltimaCol == 0)
+    arbol.value = 'false';
+    return
+end
+
+% Si atributosActivos está vacío, devuelve el árbol con la etiqueta con el valor más común
+if (sum(atributosActivos) == 0)
+    if (sumUltimaCol >= numeroEjemplos / 2)
+        arbol.value = 'true';
+    else
+        arbol.value = 'false';
+    end
+    return
+end
+
+% Encontramos la entropia actual
+p1 = sumUltimaCol / numeroEjemplos;
+if (p1 == 0);
+    p1_eq = 0;
+else
+    p1_eq = -1*p1*log2(p1);
+end
+p0 = (numeroEjemplos - sumUltimaCol) / numeroEjemplos;
+if (p0 == 0);
+    p0_eq = 0;
+else
+    p0_eq = -1*p0*log2(p0);
+end
+entropiaActual = p1_eq + p0_eq;
+
+% Encuentra el atributo que maximiza la ganancia de la información.
+
+ganancia = -1*ones(1,numeroAtributos); %-1 si está inactivo, ganancias para todos los demás bucles
+                                       %a través de los atributos que actualizan las ganancias, asegurándose de que todavía estén activos
+                                       
+for i=1:numeroAtributos;
+    if (activeAttributes(i)) % this one is still active, update its gain
+        s0 = 0; s0_and_true = 0;
+        s1 = 0; s1_and_true = 0;
+        for j=1:numeroEjemplos;
+            if (examples(j,i)); % this instance has splitting attr. true
+                s1 = s1 + 1;
+                if (examples(j, numeroAtributos + 1)); %target attr is true
+                    s1_and_true = s1_and_true + 1;
+                end
+            else
+                s0 = s0 + 1;
+                if (examples(j, numeroAtributos + 1)); %target attr is true
+                    s0_and_true = s0_and_true + 1;
+                end
+            end
+        end
+        
+        % Entropy for S(v=1)
+        if (~s1);
+            p1 = 0;
+        else
+            p1 = (s1_and_true / s1); 
+        end
+        if (p1 == 0);
+            p1_eq = 0;
+        else
+            p1_eq = -1*(p1)*log2(p1);
+        end
+        if (~s1);
+            p0 = 0;
+        else
+            p0 = ((s1 - s1_and_true) / s1);
+        end
+        if (p0 == 0);
+            p0_eq = 0;
+        else
+            p0_eq = -1*(p0)*log2(p0);
+        end
+        entropy_s1 = p1_eq + p0_eq;
+
+        % Entropy for S(v=0)
+        if (~s0);
+            p1 = 0;
+        else
+            p1 = (s0_and_true / s0); 
+        end
+        if (p1 == 0);
+            p1_eq = 0;
+        else
+            p1_eq = -1*(p1)*log2(p1);
+        end
+        if (~s0);
+            p0 = 0;
+        else
+            p0 = ((s0 - s0_and_true) / s0);
+        end
+        if (p0 == 0);
+            p0_eq = 0;
+        else
+            p0_eq = -1*(p0)*log2(p0);
+        end
+        entropy_s0 = p1_eq + p0_eq;
+        
+        ganancia(i) = entropiaActual - ((s1/numeroEjemplos)*entropy_s1) - ((s0/numeroEjemplos)*entropy_s0);
+    end
+end
+
+% Pick the attribute that maximizes gains
+[~, bestAttribute] = max(ganancia);
+% Set tree.value to bestAttribute's relevant string
+arbol.value = attributes{bestAttribute};
+% Remove splitting attribute from activeAttributes
+activeAttributes(bestAttribute) = 0;
+
+% Initialize and create the new example matrices
+examples_0 = []; examples_0_index = 1;
+examples_1 = []; examples_1_index = 1;
+for i=1:numeroEjemplos;
+    if (examples(i, bestAttribute)); % this instance has it as 1/true
+        examples_1(examples_1_index, :) = examples(i, :); % copy over
+        examples_1_index = examples_1_index + 1;
+    else
+        examples_0(examples_0_index, :) = examples(i, :);
+        examples_0_index = examples_0_index + 1;
+    end
+end
+
+% For both values of the splitting attribute
+% For value = false or 0, corresponds to left branch
+% If examples_0 is empty, add leaf node to the left with relevant label
+if (isempty(examples_0));
+    leaf = struct('value', 'null', 'left', 'null', 'right', 'null');
+    if (sumUltimaCol >= numeroEjemplos / 2); % for matrix examples
+        leaf.value = 'true';
+    else
+        leaf.value = 'false';
+    end
+    arbol.left = leaf;
+else
+    % Here is were we can recur
+    arbol.left = ID3(examples_0, attributes, activeAttributes);
+end
+% For value = true or 1, corresponds to right branch
+% If examples_1 is empty, add leaf node to the right with relevant label
+if (isempty(examples_1));
+    leaf = struct('value', 'null', 'left', 'null', 'right', 'null');
+    if (sumUltimaCol >= numeroEjemplos / 2); % for matrix examples
+        leaf.value = 'true';
+    else
+        leaf.value = 'false';
+    end
+    arbol.right = leaf;
+else
+    % Here is were we can recur
+    arbol.right = ID3(examples_1, attributes, activeAttributes);
+end
+
+% Now we can return tree
+return
+end
