@@ -6,7 +6,7 @@ if name ~= 0
     table = readtable(data);
     activos = ones(1,width(table)-1);
     arreglo = table2array(table)
-    atributos = table.Properties.VariableNames;
+    atributos = table2array(table(1,:)
     arbol = ID3(arreglo,atributos,activos)
     disp("inicio")
     %imprimirArbol(arbol, 'root');

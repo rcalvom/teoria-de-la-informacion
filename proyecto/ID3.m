@@ -22,7 +22,8 @@ function [arbol] = ID3(ejemplos, atributos, atributosActivos)
 if (isempty(ejemplos))
     error ('Debe proveer ejemplos');
 end
-
+disp("etiquetas de atributos")
+disp(atributos)
 %constantes
 numeroAtributos = length(atributosActivos)
 numeroEjemplos = length(ejemplos(:,1));
@@ -32,18 +33,18 @@ arbol = struct('valor', 'null', 'izquierdo', 'null', 'derecho', 'null');
 
 % Si el último valor de todas las filas en los ejemplos es 1, devuelva el árbol etiquetado 'verdadero'
 
-sumUltimaCol = sum(ejemplos(:, numeroAtributos ));
+sumUltimaCol = sum(ejemplos(:, numeroAtributos + 1 ));
 
-% if (sumUltimaCol == numeroEjemplos)
-%     arbol.valor = 'true';
-%     return
-% end
+if (sumUltimaCol == numeroEjemplos)
+    arbol.valor = 'true';
+    return
+end
 
 % Si el último valor de todas las filas en los ejemplos es 0, devuelva el árbol etiquetado 'Falso'
-% if (sumUltimaCol == 0)
-%     arbol.valor = 'false';
-%     return
-% end
+if (sumUltimaCol == 0)
+    arbol.valor = 'false';
+    return
+end
 
 % Si atributosActivos está vacío, devuelve el árbol con la etiqueta con el valor más común
 if (sum(atributosActivos) == 0)
@@ -82,12 +83,12 @@ for i=1:numeroAtributos
         for j=1:numeroEjemplos
             if (ejemplos(j,i)) % Esta instancia ha dividido el Atr. true
                 s1 = s1 + 1;
-                if (ejemplos(j, numeroAtributos )) %atr. objetivo es true
+                if (ejemplos(j, numeroAtributos + 1)) %atr. objetivo es true
                     s1_and_true = s1_and_true + 1;
                 end
             else
                 s0 = s0 + 1;
-                if (ejemplos(j, numeroAtributos )) %atr. objeivo es true
+                if (ejemplos(j, numeroAtributos + 1 )) %atr. objeivo es true
                     s0_and_true = s0_and_true + 1;
                 end
             end
@@ -142,7 +143,7 @@ for i=1:numeroAtributos
         ganancia(i) = entropiaActual - ((s1/numeroEjemplos)*entropy_s1) - ((s0/numeroEjemplos)*entropy_s0);
     end
 end
-disp ("ganancia")
+disp("ganancia")
 disp(ganancia)
 % Elige el atributo que maximiza las ganancias.
 [~, bestAttribute] = max(ganancia);
@@ -181,7 +182,6 @@ if (isempty(ejemplos_0))
 else
     % Aquí  usamos recursión .
     arbol.izquierdo = ID3(ejemplos_0, atributos, atributosActivos);
-    disp("recursion izquierda")
 end
 
 % Para valor = verdadero o 1, corresponde a la rama derecha
@@ -197,7 +197,6 @@ if (isempty(ejemplos_1))
 else
     % Aquí usamos recursion
     arbol.derecho = ID3(ejemplos_1, atributos, atributosActivos);
-    disp("recursion derecha")
 end
 
 % retornamos el arbol
