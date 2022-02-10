@@ -10,6 +10,6 @@ if name ~= 0
     arbol = ID3(arreglo,atributos,activos)
     disp("inicio")
     imprimirArbol(arbol, 'root');
-end
+end 
             
-   
+     
